@@ -3,779 +3,232 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>22/7 VOP — Brand Pitch</title>
+  <title>22/7 VOP — Value of Pie</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --crust:    #c47a1e;
-      --crust-dk: #7a3d0e;
-      --filling:  #b5451b;
-      --herb:     #2e6b4f;
-      --dark:     #1a0f00;
-      --mid:      #4a2c0a;
-      --muted:    #6b4c2a;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; overflow: hidden; }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #111;
-    }
-
-    /* ── FULLSCREEN STAGE ── */
-    #stage {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ── SLIDE WRAPPERS ── */
-    .slide-wrap {
-      position: absolute;
-      flex-shrink: 0;
-      transition: transform 0.62s cubic-bezier(0.77, 0, 0.175, 1),
-                  opacity   0.52s ease;
-      will-change: transform, opacity;
-    }
-    /* States */
-    .slide-wrap.is-active { transform: translateX(0)     scale(1);   opacity: 1;   pointer-events: auto;   z-index: 2; }
-    .slide-wrap.is-prev   { transform: translateX(-105%) scale(0.96); opacity: 0;   pointer-events: none;   z-index: 1; }
-    .slide-wrap.is-next   { transform: translateX(105%)  scale(0.96); opacity: 0;   pointer-events: none;   z-index: 1; }
-    .slide-wrap.is-hidden { transform: translateX(105%)  scale(0.96); opacity: 0;   pointer-events: none;   z-index: 0; display:none; }
-
-    /* ── THE SLIDE ITSELF ── */
-    .slide {
-      width: 297mm;
-      height: 210mm;
-      position: absolute;
-      top: 0; left: 0;
-      transform-origin: top left;
-      overflow: hidden;
-      font-size: 13px;
-    }
-
-    /* ── MATH TEXTURE ── */
-    .math-bg {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      user-select: none;
-      overflow: hidden;
-    }
-    .math-bg span {
-      position: absolute;
-      font-family: 'Playfair Display', serif;
-      white-space: nowrap;
-      opacity: .042;
-      color: #fff;
-    }
-
-    /* ══════════════════════════════════════
-       SLIDE 1 — COVER
-    ══════════════════════════════════════ */
-    .s-cover {
-      background: var(--dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-    }
-    .cover-glow {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle 62% at 50% 50%, rgba(196,122,30,.28) 0%, rgba(122,61,14,.12) 45%, transparent 78%),
-        radial-gradient(circle 90% at 50% 50%, rgba(74,28,5,.35) 0%, transparent 100%);
-      pointer-events: none;
-    }
-    .brand-ring {
-      position: relative;
-      z-index: 2;
-      flex-shrink: 0;
-    }
-    .brand-circle {
-      width: 440px;
-      height: 440px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 50%,
-        #f0962c 0%, #d4841a 18%, #b86814 35%,
-        #7a3d0e 56%, #3d1500 76%, #1a0f00 92%, #1a0f00 100%
-      );
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 30px;
-      position: relative;
-      overflow: hidden;
-    }
-    .pie-watermark {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .pie-watermark img {
-      width: 88%;
-      height: 88%;
-      object-fit: cover;
-      border-radius: 50%;
-      opacity: 0.042;
-      filter: grayscale(100%) brightness(0.16) sepia(1) hue-rotate(155deg) saturate(1.4);
-    }
-    .bc-num {
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      font-size: 96px;
-      color: #fff;
-      line-height: 1;
-      letter-spacing: -.02em;
-      position: relative;
-      z-index: 1;
-    }
-    .bc-slash { color: rgba(255,255,255,.65); }
-    .bc-vop {
-      font-weight: 700;
-      font-size: 18px;
-      letter-spacing: .38em;
-      color: rgba(255,255,255,.88);
-      text-transform: uppercase;
-      margin: 10px 0 8px;
-      position: relative;
-      z-index: 1;
-    }
-    .bc-sub {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 20px;
-      color: #c0392b;
-      line-height: 1.3;
-      position: relative;
-      z-index: 1;
-    }
-    .cover-ring {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 480px; height: 480px;
-      border-radius: 50%;
-      background: radial-gradient(circle 240px at 50% 50%,
-        transparent           0%,
-        transparent           90%,
-        rgba(201,121,23,.2)   91.5%,
-        rgb(201,121,23)       93%,
-        rgba(26,15,0,.9)      97%,
-        rgba(26,15,0,0)       100%
-      );
-      pointer-events: none;
-      z-index: 1;
-    }
-    .pi-badge {
-      position: absolute;
-      top: -14px; right: -14px;
-      width: 70px; height: 70px;
-      border-radius: 50%;
-      background: var(--filling);
-      color: #fff;
-      font-family: 'Playfair Display', serif;
-      font-size: 32px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 6px 20px rgba(181,69,27,.65);
-    }
-
-    /* ══════════════════════════════════════
-       SLIDE 2 — THE IDEA
-    ══════════════════════════════════════ */
-    .s-idea {
-      background: #ffffff;
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      overflow: hidden;
-    }
-    .idea-text {
-      padding: 36px 24px 36px 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-right: 1px solid rgba(0,0,0,.07);
-    }
-    .idea-text .eyebrow {
-      font-size: 8px; font-weight: 700; letter-spacing: .22em;
-      text-transform: uppercase; color: var(--crust);
-      display: block; margin-bottom: 10px;
-    }
-    .idea-text h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px; line-height: 1.2; color: var(--dark); margin-bottom: 14px;
-    }
-    .idea-text p {
-      font-size: 10.5px; line-height: 1.8; color: var(--muted); margin-bottom: 12px;
-    }
-    .idea-quote {
-      border-left: 3px solid var(--crust);
-      background: rgba(196,122,30,.06);
-      padding: 11px 14px;
-      border-radius: 0 7px 7px 0;
-      margin-top: 4px;
-    }
-    .idea-quote p {
-      font-family: 'Playfair Display', serif;
-      font-style: italic; font-size: 11px; color: var(--mid); margin: 0; line-height: 1.6;
-    }
-    .idea-cards { display: grid; grid-template-columns: repeat(3, 1fr); }
-    .icard { display: flex; flex-direction: column; border-right: 1px solid rgba(0,0,0,.07); }
-    .icard:last-child { border-right: none; }
-    .icard-visual {
-      flex: 0 0 55%;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 24px 20px; position: relative; overflow: hidden;
-    }
-    .icard-dark .icard-visual  { background: var(--dark); }
-    .icard-red  .icard-visual  { background: linear-gradient(145deg, var(--filling), var(--crust-dk)); }
-    .icard-green .icard-visual { background: var(--herb); }
-    .icard-sym {
-      font-family: 'Playfair Display', serif; font-weight: 900; color: #fff; line-height: 1;
-    }
-    .icard-dark  .icard-sym { font-size: 56px; color: var(--crust); }
-    .icard-red   .icard-sym { font-size: 46px; }
-    .icard-green .icard-sym { font-size: 42px; }
-    .icard-sym-sub { font-size: 10px; color: rgba(255,255,255,.5); letter-spacing: .06em; margin-top: 6px; }
-    .icard-dark .icard-sym-sub { color: rgba(255,255,255,.38); }
-    .icard-body {
-      flex: 1; padding: 18px 18px; background: #fff;
-      display: flex; flex-direction: column; justify-content: center;
-      border-top: 1px solid rgba(0,0,0,.06);
-    }
-    .icard-body .ic-tag {
-      font-size: 7.5px; font-weight: 700; letter-spacing: .16em;
-      text-transform: uppercase; margin-bottom: 7px; display: block;
-    }
-    .icard-dark  .ic-tag { color: var(--crust); }
-    .icard-red   .ic-tag { color: var(--filling); }
-    .icard-green .ic-tag { color: var(--herb); }
-    .icard-body h3 {
-      font-family: 'Playfair Display', serif; font-size: 14px;
-      color: var(--dark); margin-bottom: 7px; line-height: 1.3;
-    }
-    .icard-body p { font-size: 10px; color: var(--muted); line-height: 1.7; }
-
-    /* ══════════════════════════════════════
-       SLIDE 3 — THE MENU
-    ══════════════════════════════════════ */
-    .s-menu {
-      background: #ffffff;
-      color: var(--dark);
-      padding: 28px 40px 28px;
-      display: flex; flex-direction: column;
-    }
-    .s-menu .slide-hd {
-      display: flex; align-items: baseline; gap: 20px; margin-bottom: 20px; flex-shrink: 0;
-    }
-    .s-menu .slide-hd h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--dark); }
-    .s-menu .slide-hd .eyebrow {
-      font-size: 8.5px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--crust);
-    }
-    .menu-cols {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; flex: 1; min-height: 0;
-    }
-    .mcol {
-      display: flex; flex-direction: column;
-      border-radius: 12px; overflow: hidden;
-      border: 1px solid rgba(0,0,0,.07);
-      box-shadow: 0 2px 12px rgba(0,0,0,.06);
-    }
-    .mcol-img { flex: 0 0 52%; overflow: hidden; }
-    .mcol-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .mcol-body { flex: 1; padding: 12px 13px 13px; display: flex; flex-direction: column; }
-    .mcol-tag {
-      font-size: 7.5px; font-weight: 700; letter-spacing: .16em;
-      text-transform: uppercase; padding: 3px 9px; border-radius: 999px;
-      display: inline-block; margin-bottom: 7px; align-self: flex-start;
-    }
-    .mcol-tag.veg    { background: rgba(46,107,79,.12);  color: #1e6b46; }
-    .mcol-tag.nonveg { background: rgba(181,69,27,.12);  color: #a03018; }
-    .mcol-tag.sweet  { background: rgba(196,122,30,.12); color: #8a5510; }
-    .mcol-tag.sides  { background: rgba(46,79,99,.12);   color: #1e4a63; }
-    .mcol-body h3 { font-family: 'Playfair Display', serif; font-size: 13.5px; color: var(--dark); margin-bottom: 8px; }
-    .mcol-items { list-style: none; flex: 1; }
-    .mcol-items li {
-      font-size: 9.5px; color: var(--muted);
-      padding: 3px 0; border-bottom: 1px solid rgba(0,0,0,.05); line-height: 1.4;
-    }
-    .mcol-items li:last-child { border-bottom: none; }
-    .mcol-more { font-size: 8.5px; font-style: italic; color: var(--crust); margin-top: 5px; }
-
-    /* ══════════════════════════════════════
-       SLIDE 4 — THE TEAM
-    ══════════════════════════════════════ */
-    .s-team {
-      background: #ffffff;
-      color: var(--dark);
-      padding: 36px 52px;
-      display: flex; align-items: center; justify-content: center; flex-direction: column;
-    }
-    .s-team .slide-hd-c { text-align: center; margin-bottom: 28px; }
-    .s-team .slide-hd-c .eyebrow {
-      font-size: 8.5px; font-weight: 700; letter-spacing: .22em;
-      text-transform: uppercase; color: var(--crust); display: block; margin-bottom: 10px;
-    }
-    .s-team .slide-hd-c h2 { font-family: 'Playfair Display', serif; font-size: 34px; color: var(--dark); margin-bottom: 10px; }
-    .s-team .slide-hd-c p { font-size: 11.5px; color: var(--muted); line-height: 1.75; max-width: 480px; margin: 0 auto; }
-    .team-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; width: 100%; }
-    .tcard {
-      background: #fff; border-radius: 14px; padding: 28px 22px 24px;
-      text-align: center; border: 1px solid rgba(0,0,0,.07);
-      box-shadow: 0 4px 20px rgba(26,15,0,.07); border-top: 4px solid var(--crust);
-    }
-    .tcard-avatar {
-      width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700;
-      color: #fff; box-shadow: 0 5px 18px rgba(0,0,0,.18);
-    }
-    .tcard h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--dark); margin-bottom: 4px; }
-    .tcard .role { font-size: 8px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--crust); margin-bottom: 12px; }
-    .tcard p { font-size: 10.5px; color: var(--muted); line-height: 1.7; }
-
-    /* ══════════════════════════════════════
-       SLIDE 5 — CLOSING
-    ══════════════════════════════════════ */
-    .s-close { background: var(--dark); }
-    .close-top {
-      position: absolute; top: 0; left: 0; right: 0;
-      padding-top: 52px; text-align: center; z-index: 1;
-    }
-    .close-top .eyebrow {
-      font-size: 8.5px; font-weight: 700; letter-spacing: .24em;
-      text-transform: uppercase; color: var(--crust); display: block;
-    }
-    .close-center {
-      position: absolute; top: 50%; left: 0; right: 0;
-      transform: translateY(-50%); text-align: center; z-index: 1;
-    }
-    .close-headline {
-      font-family: 'Playfair Display', serif; font-size: 62px; line-height: 1.1; color: #fff;
-    }
-    .close-headline em { font-style: italic; color: var(--crust); }
-    .close-bottom {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding-bottom: 44px; text-align: center; z-index: 1;
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
-    }
-    .close-url {
-      font-family: 'Playfair Display', serif; font-size: 18px;
-      color: var(--crust); letter-spacing: .05em; text-decoration: none;
-    }
-    .close-foot { font-size: 8px; color: rgba(255,255,255,.2); letter-spacing: .12em; text-transform: uppercase; }
-
-    /* ── SLIDE NUMBER ── */
-    .slide-num {
-      position: absolute; bottom: 12px; left: 22px;
-      font-size: 8px; font-weight: 600; letter-spacing: .18em;
-      text-transform: uppercase; z-index: 10;
-    }
-    .num-dark  { color: rgba(255,255,255,.22); }
-    .num-light { color: rgba(26,15,0,.2); }
-
-    /* ══════════════════════════════════════
-       NAVIGATION ARROWS
-    ══════════════════════════════════════ */
-    .nav-btn {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 100;
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      border: none;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(8px);
-      color: rgba(255,255,255,0.7);
-      font-size: 20px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s, color 0.2s, opacity 0.3s;
-      outline: none;
-    }
-    .nav-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
-    .nav-btn:disabled { opacity: 0.15; pointer-events: none; }
-    #btn-prev { left: 16px; }
-    #btn-next { right: 16px; }
-
-    /* ══════════════════════════════════════
-       DOT INDICATORS
-    ══════════════════════════════════════ */
-    #dots {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.25);
-      cursor: pointer;
-      transition: background 0.25s, transform 0.25s;
-    }
-    .dot.active {
-      background: var(--crust);
-      transform: scale(1.4);
-    }
-
-    /* ══════════════════════════════════════
-       PRINT — restore all-slides layout
-    ══════════════════════════════════════ */
-    @media print {
-      html, body { overflow: visible; height: auto; }
-      #stage { position: static; display: block; }
-      #btn-prev, #btn-next, #dots { display: none; }
-      .slide-wrap {
-        position: relative !important;
-        transform: none !important;
-        opacity: 1 !important;
-        display: block !important;
-        width: 297mm !important;
-        height: 210mm !important;
-        page-break-after: always;
-        break-after: page;
-        margin: 0 !important;
-      }
-      .slide { transform: none !important; position: relative !important; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div id="stage">
-
-  <!-- SLIDE 1 · COVER -->
-  <div class="slide-wrap is-active" data-index="0">
-  <section class="slide s-cover">
-    <div class="cover-glow"></div>
-    <div class="math-bg" aria-hidden="true">
-      <span style="left:4%;top:8%;font-size:11px;transform:rotate(-3deg)">π = 3.14159265358979…</span>
-      <span style="left:67%;top:6%;font-size:16px;transform:rotate(2deg)">22/7 ≈ π</span>
-      <span style="left:13%;top:22%;font-size:9px;transform:rotate(5deg)">cos²θ + sin²θ = 1</span>
-      <span style="left:54%;top:17%;font-size:10px;transform:rotate(-2deg)">e^(iπ) + 1 = 0</span>
-      <span style="left:83%;top:31%;font-size:9px;transform:rotate(3deg)">d/dx[tan x] = sec²x</span>
-      <span style="left:6%;top:46%;font-size:12px;transform:rotate(-5deg)">lim(x→0) sin(x)/x = 1</span>
-      <span style="left:63%;top:50%;font-size:9px;transform:rotate(3deg)">∑ 1/n² = π²/6</span>
-      <span style="left:27%;top:65%;font-size:10px;transform:rotate(-3deg)">d/dx[sin x] = cos x</span>
-      <span style="left:77%;top:67%;font-size:10px;transform:rotate(2deg)">∫₀^π sin(x) dx = 2</span>
-      <span style="left:5%;top:80%;font-size:12px;transform:rotate(4deg)">2πr</span>
-      <span style="left:44%;top:85%;font-size:9px;transform:rotate(-2deg)">Γ(n+1) = n!</span>
-      <span style="left:70%;top:88%;font-size:10px;transform:rotate(3deg)">arctan(1) = π/4</span>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <span class="logo-fraction">22/7</span>
+        <span class="logo-vop">VOP</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#why">Why Us</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact" class="btn-nav">Order Now</a></li>
+      </ul>
     </div>
-    <div class="cover-ring"></div>
-    <div class="brand-ring">
-      <div class="brand-circle">
-        <div class="pie-watermark">
-          <img src="veg pie.png" alt="" role="presentation" />
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Handcrafted Savoury Pies</p>
+      <h1 class="hero-title">Irrational&nbsp;Flavour.<br />Perfect&nbsp;Every&nbsp;Time.</h1>
+      <p class="hero-sub">
+        Just as 22/7 endlessly approximates π, our pies endlessly pursue the perfect bite —
+        golden crusts, bold fillings, and unbeatable value.
+      </p>
+      <div class="hero-cta">
+        <a href="#why" class="btn-primary">Why 22/7 VOP</a>
+        <a href="#about" class="btn-ghost">Meet the Bakers</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="pie-graphic">
+        <div class="pie-plate">
+          <div class="pie-body">
+            <div class="pie-top">
+              <div class="steam s1"></div>
+              <div class="steam s2"></div>
+              <div class="steam s3"></div>
+              <div class="vent-hole"></div>
+            </div>
+          </div>
         </div>
-        <div class="bc-num">22<span class="bc-slash">/</span>7</div>
-        <div class="bc-vop">VOP</div>
-        <div class="bc-sub">Value of Pie</div>
       </div>
       <div class="pi-badge">π</div>
     </div>
-    <span class="slide-num num-dark">01 / 05</span>
-  </section>
+  </header>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>Savoury Pies ·</span>
+      <span>Golden Crust ·</span>
+      <span>Real Ingredients ·</span>
+      <span>Value of Pie ·</span>
+      <span>22/7 VOP ·</span>
+      <span>Fresh Daily ·</span>
+      <span>Irrational Flavour ·</span>
+      <span>Savoury Pies ·</span>
+      <span>Golden Crust ·</span>
+      <span>Real Ingredients ·</span>
+      <span>Value of Pie ·</span>
+      <span>22/7 VOP ·</span>
+      <span>Fresh Daily ·</span>
+      <span>Irrational Flavour ·</span>
+    </div>
   </div>
 
-  <!-- SLIDE 2 · THE IDEA -->
-  <div class="slide-wrap is-next" data-index="1">
-  <section class="slide s-idea">
-    <div class="idea-text">
-      <span class="eyebrow">The Concept</span>
-      <h2>A Name Born<br/>from a Number</h2>
-      <p>For the mathematically inclined, recognition is instant. For everyone else, curiosity does the work — they see 22/7 and wonder if it's a typo of 24/7. Either way, they remember us.</p>
-      <div class="idea-quote">
-        <p>"Strong recall, clear personality, and a name that rewards those who get it — while intriguing those who don't."</p>
+  <!-- WHY US -->
+  <section class="section section-dark" id="why">
+    <div class="chalk-math" aria-hidden="true">
+      <span style="left:3%;top:6%;transform:rotate(-4deg);font-size:13px">π = 3.14159265358979...</span>
+      <span style="left:38%;top:4%;transform:rotate(2deg);font-size:11px">∫ sin(x) dx = −cos(x) + C</span>
+      <span style="left:72%;top:7%;transform:rotate(-3deg);font-size:15px">22/7 ≈ π</span>
+      <span style="left:8%;top:22%;transform:rotate(5deg);font-size:10px">cos²θ + sin²θ = 1</span>
+      <span style="left:55%;top:18%;transform:rotate(-2deg);font-size:12px">e^(iπ) + 1 = 0</span>
+      <span style="left:82%;top:24%;transform:rotate(3deg);font-size:11px">d/dx[tan x] = sec²x</span>
+      <span style="left:18%;top:40%;transform:rotate(-5deg);font-size:14px">lim(x→0) sin(x)/x = 1</span>
+      <span style="left:46%;top:44%;transform:rotate(3deg);font-size:10px">∑ 1/n² = π²/6</span>
+      <span style="left:76%;top:38%;transform:rotate(-2deg);font-size:12px">arctan(1) = π/4</span>
+      <span style="left:5%;top:60%;transform:rotate(4deg);font-size:11px">∇²φ = 0</span>
+      <span style="left:30%;top:65%;transform:rotate(-3deg);font-size:13px">d/dx[sin x] = cos x</span>
+      <span style="left:62%;top:58%;transform:rotate(2deg);font-size:10px">∫₀^π sin(x) dx = 2</span>
+      <span style="left:88%;top:62%;transform:rotate(-4deg);font-size:11px">tan(π/4) = 1</span>
+      <span style="left:14%;top:80%;transform:rotate(3deg);font-size:12px">2πr</span>
+      <span style="left:42%;top:84%;transform:rotate(-2deg);font-size:10px">Γ(n+1) = n!</span>
+      <span style="left:70%;top:78%;transform:rotate(4deg);font-size:13px">sinh(x) = (eˣ − e⁻ˣ)/2</span>
+      <span style="left:25%;top:92%;transform:rotate(-3deg);font-size:11px">sec²x − tan²x = 1</span>
+      <span style="left:60%;top:90%;transform:rotate(2deg);font-size:12px">π² ≈ 9.8696</span>
+    </div>
+    <div class="container">
+      <div class="section-header light">
+        <p class="section-tag">Why 22/7 VOP</p>
+        <h2 class="section-title">The Value is in the Ratio</h2>
+      </div>
+      <div class="pillars">
+        <div class="pillar">
+          <h3>Scratch-Made Daily</h3>
+          <p>No freezer shortcuts. Pastry rolled and filled every morning with locally sourced ingredients.</p>
+        </div>
+        <div class="pillar">
+          <h3>True Value</h3>
+          <p>Premium ingredients don't have to mean premium markups. Real food at honest prices — that's VOP.</p>
+        </div>
+        <div class="pillar">
+          <h3>Baked Not Fried</h3>
+          <p>Every pie goes into a convection oven for an even golden crust — zero compromise on texture.</p>
+        </div>
+        <div class="pillar">
+          <h3>Real Ingredients</h3>
+          <p>No MSG, no artificial preservatives, no shortcuts. What you read on the menu is what's inside.</p>
+        </div>
       </div>
     </div>
-    <div class="idea-cards">
-      <div class="icard icard-dark">
-        <div class="icard-visual">
-          <div class="icard-sym">22/7</div>
-          <div class="icard-sym-sub">= 3.142857… ≈ π</div>
-        </div>
-        <div class="icard-body">
-          <span class="ic-tag">The Number</span>
-          <h3>Mathematics Meets Memory</h3>
-          <p>The most widely taught rational approximation of pi — instantly familiar to anyone who has sat in a classroom, anywhere in the world.</p>
-        </div>
-      </div>
-      <div class="icard icard-red">
-        <div class="icard-visual">
-          <div class="icard-sym">π = PIE</div>
-        </div>
-        <div class="icard-body">
-          <span class="ic-tag">The Wordplay</span>
-          <h3>One Character, Two Meanings</h3>
-          <p>Mathematics and the dish on your plate — sharing one sound. Our punchline makes it explicit: <em>Value of Pie.</em> Memorable, playful, completely original.</p>
-        </div>
-      </div>
-      <div class="icard icard-green">
-        <div class="icard-visual">
-          <div class="icard-sym" style="font-size:34px;text-align:center;line-height:1.3">22/7<br/>vs<br/>24/7</div>
-        </div>
-        <div class="icard-body">
-          <span class="ic-tag">The Recall</span>
-          <h3>Curiosity Converts Strangers</h3>
-          <p>Those who don't immediately recognise the π reference see 22/7, think of 24/7, and pause. That pause is our brand working — they always look twice.</p>
-        </div>
-      </div>
-    </div>
-    <span class="slide-num num-light">02 / 05</span>
   </section>
+
+  <!-- ABOUT / PARTNERS -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">The People</p>
+        <h2 class="section-title">Three Bakers. One Obsession.</h2>
+        <p class="section-desc">22/7 VOP was founded by three friends who believed that a great savoury pie should be accessible to everyone — without cutting a single corner.</p>
+      </div>
+      <div class="partners">
+
+        <div class="partner-card">
+          <div class="partner-avatar" style="background: linear-gradient(135deg, #b5451b, #6b2510);">
+            <span>JN</span>
+          </div>
+          <h3>Jaskamal Nayar</h3>
+          <p class="partner-role">Co-Founder</p>
+        </div>
+
+        <div class="partner-card">
+          <div class="partner-avatar" style="background: linear-gradient(135deg, #2e6b4f, #1a4030);">
+            <span>DJ</span>
+          </div>
+          <h3>Dipika Jha</h3>
+          <p class="partner-role">Co-Founder</p>
+        </div>
+
+        <div class="partner-card">
+          <div class="partner-avatar" style="background: linear-gradient(135deg, #c47a1e, #7a3d0e);">
+            <span>ML</span>
+          </div>
+          <h3>Manju Lalla</h3>
+          <p class="partner-role">Co-Founder</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULA STRIP -->
+  <div class="formula-strip">
+    <div class="formula-inner">
+      <span class="formula-text">22 ÷ 7 = 3.142857…</span>
+      <span class="formula-divider">·</span>
+      <span class="formula-text">Flavour ÷ Price = <strong>VOP</strong></span>
+      <span class="formula-divider">·</span>
+      <span class="formula-text">Every pie, every time.</span>
+    </div>
   </div>
 
-  <!-- SLIDE 3 · THE MENU -->
-  <div class="slide-wrap is-hidden" data-index="2">
-  <section class="slide s-menu">
-    <div class="slide-hd">
-      <span class="eyebrow">What We Serve</span>
-      <h2>The Menu</h2>
-    </div>
-    <div class="menu-cols">
-      <div class="mcol">
-        <div class="mcol-img"><img src="veg pie.png" alt="Vegetarian Pies" /></div>
-        <div class="mcol-body">
-          <span class="mcol-tag veg">Vegetarian</span>
-          <h3>Garden &amp; Spice</h3>
-          <ul class="mcol-items">
-            <li>Creamy Mushroom &amp; Leek</li>
-            <li>Ricotta Cheese &amp; Spinach</li>
-            <li>Pindi Chole · Rajma</li>
-            <li>Butter Paneer · Chilly Paneer</li>
-            <li>Pizza Margherita</li>
-            <li>Chilly Garlic &amp; Sweet Corn</li>
+  <!-- CONTACT / ORDER -->
+  <section class="section section-warm" id="contact">
+    <div class="container">
+      <div class="contact-layout">
+        <div class="contact-left">
+          <p class="section-tag">Get in Touch</p>
+          <h2 class="section-title">Ready to Order?</h2>
+          <p>Place a bulk order, arrange a catering enquiry, or just tell us what filling you wish we had. We read every message.</p>
+          <ul class="contact-details">
+            <li>+91 98765 43210</li>
           </ul>
-          <div class="mcol-more">+ 2 more varieties</div>
         </div>
-      </div>
-      <div class="mcol">
-        <div class="mcol-img"><img src="meat pie.png" alt="Non-Vegetarian Pies" /></div>
-        <div class="mcol-body">
-          <span class="mcol-tag nonveg">Non-Vegetarian</span>
-          <h3>Hearty &amp; Bold</h3>
-          <ul class="mcol-items">
-            <li>Butter Chicken</li>
-            <li>Chicken Do Pyaza</li>
-            <li>Tikka Masala · Changezi</li>
-            <li>Shepherd's Pie</li>
-            <li>Rogan Josh</li>
-            <li>Palak Chicken</li>
-          </ul>
-        </div>
-      </div>
-      <div class="mcol">
-        <div class="mcol-img"><img src="sweet pie.png" alt="Sweet Pies" /></div>
-        <div class="mcol-body">
-          <span class="mcol-tag sweet">Sweet Pies</span>
-          <h3>Dessert Pies</h3>
-          <ul class="mcol-items">
-            <li>Lemon Curd · Orange</li>
-            <li>Apple Cinnamon</li>
-            <li>Mixed Berry</li>
-            <li>Strawberry Preserve</li>
-            <li>Pineapple · Walnut</li>
-          </ul>
-        </div>
-      </div>
-      <div class="mcol">
-        <div class="mcol-img"><img src="slush.png" alt="Beverages and Sides" /></div>
-        <div class="mcol-body">
-          <span class="mcol-tag sides">Beyond the Pie</span>
-          <h3>Sides &amp; Sips</h3>
-          <ul class="mcol-items">
-            <li>🌭 Hot Dogs — custom spec</li>
-            <li>🍹 Sugarcane Juice + Slush</li>
-            <li>Watermelon · Mango</li>
-            <li>Ginger Lemon · Passion Fruit</li>
-            <li>🍦 Soft Serve / Frozen Yogurt</li>
-          </ul>
-        </div>
+        <!-- Formspree: sign up at formspree.io, create a form, replace XXXXXXXX below with your form ID -->
+        <form class="contact-form" action="https://formspree.io/f/xzdjekpj" method="POST">
+          <!-- redirect back to this page after submission -->
+          <input type="hidden" name="_next" value="https://omkarlalla-code.github.io/22-7-vop/?sent=1" />
+          <input type="hidden" name="_subject" value="New enquiry — 22/7 VOP" />
+          <!-- honeypot spam guard -->
+          <input type="text" name="_gotcha" style="display:none" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your name" required />
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="+91 00000 00000" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="message">Message / Order</label>
+            <textarea id="message" name="message" rows="4" placeholder="Tell us what you'd like…" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary full">Send Enquiry</button>
+        </form>
       </div>
     </div>
-    <span class="slide-num num-light">03 / 05</span>
   </section>
-  </div>
 
-  <!-- SLIDE 4 · THE TEAM -->
-  <div class="slide-wrap is-hidden" data-index="3">
-  <section class="slide s-team">
-    <div class="slide-hd-c">
-      <span class="eyebrow">The People</span>
-      <h2>Three Bakers. One Obsession.</h2>
-      <p>22/7 VOP was founded by three friends who believed that a great savoury pie should be accessible to everyone — without cutting a single corner.</p>
-    </div>
-    <div class="team-cards">
-      <div class="tcard">
-        <div class="tcard-avatar" style="background:linear-gradient(135deg,#b5451b,#6b2510)">JN</div>
-        <h3>Jaskamal Nayar</h3>
-        <div class="role">Co-Founder</div>
-        <p>Driven by an obsession with flavour and food science — the architect of 22/7 VOP's savoury pie range and menu development.</p>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-fraction">22/7</span>
+        <span class="logo-vop">VOP</span>
+        <p>Value of Pie</p>
       </div>
-      <div class="tcard">
-        <div class="tcard-avatar" style="background:linear-gradient(135deg,#2e6b4f,#1a4030)">DJ</div>
-        <h3>Dipika Jha</h3>
-        <div class="role">Co-Founder</div>
-        <p>Sharp business acumen and a deep understanding of what mall shoppers want — driving the brand's commercial strategy.</p>
-      </div>
-      <div class="tcard">
-        <div class="tcard-avatar" style="background:linear-gradient(135deg,#c47a1e,#7a3d0e)">ML</div>
-        <h3>Manju Lalla</h3>
-        <div class="role">Co-Founder</div>
-        <p>Operations and quality guardian — every pie that leaves the cloud kitchen meets the 22/7 VOP standard, every single day.</p>
-      </div>
+      <p class="footer-tagline">Irrational flavour. Honest price. Every single day.</p>
+      <p class="footer-copy">© 2026 22/7 VOP · All rights reserved.</p>
+      <p class="footer-dev">Site developed and maintained by <a href="https://omkarlalla-code.github.io" target="_blank" rel="noopener">omkarlalla-code</a></p>
     </div>
-    <span class="slide-num num-light">04 / 05</span>
-  </section>
-  </div>
+  </footer>
 
-  <!-- SLIDE 5 · CLOSING -->
-  <div class="slide-wrap is-hidden" data-index="4">
-  <section class="slide s-close">
-    <div class="cover-glow"></div>
-    <div class="math-bg" aria-hidden="true">
-      <span style="left:5%;top:11%;font-size:14px;transform:rotate(-3deg)">22/7 ≈ π</span>
-      <span style="left:75%;top:8%;font-size:10px;transform:rotate(2deg)">π = 3.14159…</span>
-      <span style="left:13%;top:78%;font-size:11px;transform:rotate(-4deg)">e^(iπ) + 1 = 0</span>
-      <span style="left:72%;top:82%;font-size:9px;transform:rotate(3deg)">∑ 1/n² = π²/6</span>
-      <span style="left:38%;top:15%;font-size:9px;transform:rotate(-2deg)">∫ sin(x) dx = −cos(x) + C</span>
-    </div>
-    <div class="close-top">
-      <span class="eyebrow">The Opportunity</span>
-    </div>
-    <div class="close-center">
-      <div class="close-headline">A brand worth<br/><em>associating with.</em></div>
-    </div>
-    <div class="close-bottom">
-      <a class="close-url" href="https://22by7vop.com" target="_blank" rel="noopener">22by7vop.com</a>
-      <div class="close-foot">Irrational Flavour · Honest Price · Every Single Day</div>
-    </div>
-    <span class="slide-num num-dark">05 / 05</span>
-  </section>
-  </div>
-
-</div>
-
-<!-- NAV ARROWS -->
-<button class="nav-btn" id="btn-prev" aria-label="Previous slide" disabled>&#8592;</button>
-<button class="nav-btn" id="btn-next" aria-label="Next slide">&#8594;</button>
-
-<!-- DOTS -->
-<div id="dots">
-  <div class="dot active" data-goto="0"></div>
-  <div class="dot" data-goto="1"></div>
-  <div class="dot" data-goto="2"></div>
-  <div class="dot" data-goto="3"></div>
-  <div class="dot" data-goto="4"></div>
-</div>
-
-<script>
-  /* ── SIZING ── */
-  const MM = 3.7795, SW = 297 * MM, SH = 210 * MM;
-  const wraps = Array.from(document.querySelectorAll('.slide-wrap'));
-
-  function scaleSlides() {
-    const pad = 80; // room for dots + top breathing
-    const scale = Math.min(
-      (window.innerWidth  - 40) / SW,
-      (window.innerHeight - pad) / SH,
-      1
-    );
-    const W = Math.round(SW * scale);
-    const H = Math.round(SH * scale);
-    wraps.forEach(w => {
-      w.style.width  = W + 'px';
-      w.style.height = H + 'px';
-      w.querySelector('.slide').style.transform = `scale(${scale})`;
-    });
-  }
-  scaleSlides();
-  window.addEventListener('resize', scaleSlides);
-
-  /* ── SLIDER STATE ── */
-  const TOTAL = wraps.length;
-  let current = 0;
-
-  const btnPrev = document.getElementById('btn-prev');
-  const btnNext = document.getElementById('btn-next');
-  const dots    = Array.from(document.querySelectorAll('.dot'));
-
-  function goTo(idx, dir) {
-    if (idx < 0 || idx >= TOTAL || idx === current) return;
-
-    const prev = current;
-    current = idx;
-
-    // Show adjacent; hide far-away ones
-    wraps.forEach((w, i) => {
-      w.classList.remove('is-active', 'is-prev', 'is-next', 'is-hidden');
-      if (i === current) {
-        w.style.display = '';
-        // force reflow so transition fires
-        void w.offsetWidth;
-        w.classList.add('is-active');
-      } else if (i === prev) {
-        w.style.display = '';
-        w.classList.add(current > prev ? 'is-prev' : 'is-next');
-        // hide after transition
-        setTimeout(() => {
-          if (!w.classList.contains('is-active')) w.style.display = 'none';
-        }, 700);
-      } else {
-        w.style.display = 'none';
-        w.classList.add('is-hidden');
-      }
-    });
-
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-    btnPrev.disabled = current === 0;
-    btnNext.disabled = current === TOTAL - 1;
-  }
-
-  // Initialise display
-  wraps.forEach((w, i) => {
-    if (i !== 0 && i !== 1) w.style.display = 'none';
-  });
-
-  btnPrev.addEventListener('click', () => goTo(current - 1));
-  btnNext.addEventListener('click', () => goTo(current + 1));
-  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.goto)));
-
-  /* ── KEYBOARD ── */
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown'  || e.key === ' ')    goTo(current + 1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                        goTo(current - 1);
-  });
-
-  /* ── TOUCH SWIPE ── */
-  let touchX = null;
-  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
-  document.addEventListener('touchend', e => {
-    if (touchX === null) return;
-    const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 50) goTo(dx < 0 ? current + 1 : current - 1);
-    touchX = null;
-  }, { passive: true });
-</script>
 </body>
 </html>
